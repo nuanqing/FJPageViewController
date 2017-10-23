@@ -64,7 +64,7 @@
         [self.buttonArray addObject:titleButton];
         [self addSubview:titleButton];
         //默认选中
-        if (idx == 0) {
+        if (idx == titleDefaultSelect) {
             titleButton.selected = YES;
             if (titleScale) {
                 titleButton.transform = CGAffineTransformMakeScale(1 + titleScaleRange , 1 + titleScaleRange);
