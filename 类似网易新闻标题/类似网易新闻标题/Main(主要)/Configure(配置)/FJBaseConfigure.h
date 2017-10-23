@@ -50,7 +50,5 @@ static CGFloat const indicatorHeight         = 4;
 static CGFloat const indicatorAmimationTime  = 0.2;
 //标题过渡动画时间
 static CGFloat const titleScrollViewAmimationTime  = 0.32;
-//标题的默认选中 (不能超过数组的个数)
-static NSInteger const titleDefaultSelect  = 0;
 
 #endif /* FJBaseConfigure_h */
