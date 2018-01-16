@@ -1,11 +1,8 @@
 # FJPageViewController
-最近类似网易新闻，腾讯视频，今日头条等标题的滚动效果控件非常火，自己工作闲暇之余也写了一个类似的效果（OC与Swift两个版本），虽然简单，但希望能够帮助到需要的朋友~
+标题的滚动效果控件
 
->作者：nuanqing
 >
->版本：1.0.0
->
->简介：类似网易新闻，腾讯视频，今日头条等标题的滚动效果控件，可以自己定义效果。
+>简介：一款标题的滚动效果控件，可以自己定义效果。
 >
 
 
@@ -53,4 +50,3 @@ static CGFloat const titleScrollViewAmimationTime  = 0.32;
 //标题的默认选中 (不能超过数组的个数)
 static NSInteger const titleDefaultSelect  = 0;
 ```
-有用的话，不妨给个**Star**吧！~
