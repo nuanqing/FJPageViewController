@@ -13,18 +13,10 @@
 
 @interface FJContentView ()<UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSMutableArray *buttonArray;
-
 @end
 
 @implementation FJContentView
 
-- (id)init{
-    if (self = [super init]) {
-       
-    }
-    return self; 
-}
 - (id)initWithTitleArray:(NSArray *)titleArray{
     if (self = [super init]) {
         self.titleScrollView.titleArray = titleArray.mutableCopy;
@@ -52,21 +44,44 @@
     __weak typeof(self) weakSelf = self;
     //承载子控制器的视图滚动到正确控制器位置
     self.titleScrollView.titleViewSelectIdxHandler = ^(NSInteger selectIdx){
-        weakSelf.scrollView.contentOffset = CGPointMake(selectIdx * FJWidth, 0);
+       [weakSelf.scrollView setContentOffset:CGPointMake(selectIdx * FJWidth, 0) animated:YES];
     };
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+    if ([_delegate respondsToSelector:@selector(loadChildViewControllers)]) {
+        [_delegate loadChildViewControllers];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self scrollViewDidEndScrollingAnimation:self.scrollView];
+    NSInteger idx = scrollView.contentOffset.x / FJWidth;
+    self.scrollView.contentOffset = CGPointMake(idx * FJWidth, 0);
+    [self.titleScrollView titleButtonClick:self.buttonArray[idx]];
+}
+
+#pragma mark - 懒加载
+- (NSMutableArray *)buttonArray
+{
+    if (!_buttonArray) {
+        _buttonArray = [NSMutableArray array];
+    }
+    return _buttonArray;
 }
 //承载子控制器的视图
 - (UIScrollView *)scrollView{
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc]init];
-        _scrollView.backgroundColor = [UIColor blueColor];
+        _scrollView.backgroundColor = [UIColor clearColor];
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.pagingEnabled = YES;
         _scrollView.bounces = NO;
         _scrollView.delegate = self;
-        
-         [self addSubview:_scrollView];
+        [self addSubview:_scrollView];
     }
     return _scrollView;
 }
@@ -76,32 +91,10 @@
         _titleScrollView = [[FJTitleScrollView alloc]init];
         _titleScrollView.showsHorizontalScrollIndicator = NO;
         _titleScrollView.backgroundColor = TitleScrollBackGroundColor;
-       
+        
         [self addSubview:_titleScrollView];
     }
     return _titleScrollView;
 }
-
-#pragma mark - <UIScrollViewDelegate>
- //承载子控制器的视图与标题视图滚动到相应的位置
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    if (_scrollView == scrollView) {
-        NSInteger idx = scrollView.contentOffset.x / FJWidth;
-        [self.titleScrollView titleButtonClick:_buttonArray[idx]];
-       
-        _scrollView.contentOffset = CGPointMake(idx * FJWidth, 0);
-    }
-    
-}
-
-- (NSMutableArray *)buttonArray
-{
-    if (!_buttonArray) {
-        _buttonArray = [NSMutableArray array];
-    }
-    return _buttonArray;
-}
-
 
 @end
