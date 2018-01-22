@@ -12,18 +12,34 @@
 基本使用，在控制器中添加以下代码:
 
 ```
-    NSArray *titleArray = @[@"测试01",@"测试02",@"测试03",@"测试04",@"测试05",@"测试06",@"测试07",@"测试08",@"测试09",@"测试10"];
-    self.contentView.titleArray = titleArray;
-    self.contentView.frame = CGRectMake(0, 0, FJWidth, FJHeight);
-    //添加子控制器
-    for (NSInteger i = 0; i < titleArray.count; i++) {
-        UIViewController *vc = [UIViewController new];
-        vc.view.frame = CGRectMake(FJWidth*i, 0, FJWidth,self.contentView.scrollView.frame.size.height);
-        vc.view.backgroundColor = RandColor; //随机色
-        [self.contentView.scrollView addSubview:vc.view];
-        [self addChildViewController:vc];
-    }
+//添加子控制器
+[self.titleArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+FJTopicViewController *vc = [FJTopicViewController new];
+[self addChildViewController:vc];
+}];
+
+self.contentView.delegate = self;
+self.contentView.frame = CGRectMake(0, 0, FJWidth, FJHeight);
+[self.view addSubview:self.contentView];
+//第一次需要加载控制器
+[self loadChildViewControllers];
 ```
+设置代理方法:
+```
+#pragma mark - contentViewDelegate
+
+- (void)loadChildViewControllers{
+NSInteger idx = self.contentView.scrollView.contentOffset.x / FJWidth;
+UIViewController *ShowVc = self.childViewControllers[idx];
+// 加载过的控制器，就直接返回(同一个view添加多次只会添加一次,没有必要每次添加)
+    if (![ShowVc isViewLoaded]){
+    ShowVc.view.frame = CGRectMake(FJWidth*idx, 0, FJWidth,self.contentView.scrollView.frame.size.height);
+    ShowVc.title = _titleArray[idx];
+    [self.contentView.scrollView addSubview:ShowVc.view];
+    }
+}
+```
+
 修改配置:
 
 ```
